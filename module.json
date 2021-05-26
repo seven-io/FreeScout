@@ -1,0 +1,21 @@
+{
+    "active": 0,
+    "alias": "sms77",
+    "aliases": {},
+    "author": "sms77 e.K.",
+    "authorUrl": "https://www.sms77.io",
+    "description": "Send SMS via sms77",
+    "detailsUrl": "",
+    "files": ["start.php"],
+    "keywords": ["sms"],
+    "img": "/modules/sms77/logo.svg",
+    "license": "MIT",
+    "name": "Sms77",
+    "order": 0,
+    "providers": [
+        "Modules\\Sms77\\Providers\\Sms77ServiceProvider"
+    ],
+    "requiredAppVersion": "1.0.2",
+    "requires": [],
+    "version": "1.0.0"
+}

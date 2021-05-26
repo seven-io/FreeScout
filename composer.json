@@ -1,0 +1,46 @@
+{
+    "authors": [
+        {
+            "email": "support@sms77.io",
+            "homepage": "https://www.sms77.io",
+            "name": "sms77 e.K.",
+            "role": "Developer"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Modules\\Sms77\\": ""
+        }
+    },
+    "description": "FreeScout module for sending SMS via sms77",
+    "extra": {
+        "laravel": {
+            "aliases": {},
+            "providers": [
+                "Modules\\Sms77\\Providers\\Sms77ServiceProvider"
+            ]
+        }
+    },
+    "homepage": "https://github.com/sms77io/FreeScout",
+    "keywords": [
+        "sms",
+        "freescout"
+    ],
+    "license": "MIT",
+    "minimum-stability": "dev",
+    "name": "sms77io/freescout",
+    "require": {
+        "ext-ctype": "*",
+        "ext-curl": "*",
+        "ext-mbstring": "*",
+        "ext-json": "*",
+        "php": ">=7.0"
+    },
+    "support": {
+        "docs": "https://github.com/sms77io/FreeScout",
+        "email": "support@sms77.io",
+        "rss": "https://www.sms77.io/de/feed/",
+        "source": "https://github.com/sms77io/FreeScout"
+    },
+    "type": "library"
+}
