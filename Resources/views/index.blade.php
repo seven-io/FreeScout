@@ -1,16 +1,18 @@
 @extends('layouts.app')
 
-@section('title', 'sms77 ' . __('Bulk SMS'))
+@section('title', __(':vendor Bulk SMS', ['vendor' => config('sms77.name')]))
 @section('content_class', 'content-full')
 
 @section('content')
-    <h1>{{__('Bulk SMS')}}</h1>
+    <div class='flexy-container'>
+        <h1>{{__('Bulk SMS by :vendor', ['vendor' => config('sms77.name')])}}</h1>
 
-    <p class='text-help'>
-        {{__('Send SMS to all your users at once.')}}
-    </p>
+        <p class='text-info margin-0'>
+            {{__('Use this form to send SMS to all your users at once.')}}
+        </p>
+    </div>
 
-    <form class='form-horizontal margin-top' method='POST' action=''>
+    <form class='form-horizontal' method='POST' action=''>
         {{ csrf_field() }}
 
         <div class='form-group{{ $errors->has('text') ? ' has-error' : '' }}'>
@@ -35,6 +37,40 @@
             </div>
         </div>
     </form>
+
+    <hr/>
+
+    <h2>{{__('History')}}</h2>
+
+    @if(count($messages))
+        <table class='table table-striped'>
+            <caption>
+                {{__('This table represents the sent messages.')}}
+            </caption>
+            <thead>
+            <tr>
+                <th>{{ __('ID') }}</th>
+                <th>{{ __('To') }}</th>
+                <th>{{ __('Text') }}</th>
+                <th>{{ __('Response') }}</th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach ($messages as $msg)
+                <tr>
+                    <td>{{ $msg->id }}</td>
+                    <td>{{ implode(PHP_EOL, $msg->to) }}</td>
+                    <td>{{ $msg->text }}</td>
+                    <td>{{ $msg->getCleanResponse() }}</td>
+                </tr>
+            @endforeach
+            </tbody>
+        </table>
+    @else
+        <p class='text-help'>
+            {{__('It seems that no messages have been sent yet.')}}
+        </p>
+    @endif
 @stop
 
 @include('partials/editor')

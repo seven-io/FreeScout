@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
 use Illuminate\View\View;
+use Modules\Sms77\Entities\Sms;
 use Modules\Sms77\Misc\HttpClient;
 
 class Sms77Controller extends Controller {
@@ -23,7 +24,9 @@ class Sms77Controller extends Controller {
             'text' => '',
         ];
 
-        return view('sms77::index', compact('msg'));
+        return view('sms77::index', array_merge(compact('msg'), [
+            'messages' => Sms::all(),
+        ]));
     }
 
     /**

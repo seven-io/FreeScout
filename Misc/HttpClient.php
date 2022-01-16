@@ -8,6 +8,7 @@ use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Client;
 use GuzzleHttp\RequestOptions;
 use Illuminate\Support\Facades\Log;
+use Modules\Sms77\Entities\Sms;
 use Session;
 
 class HttpClient {
@@ -65,19 +66,21 @@ class HttpClient {
      * @throws GuzzleException
      */
     public function sms(string $text, ...$to): int {
-        $to = implode(',', $to);
         $code = 0;
         $cost = 0.0;
         $msgCount = 0.0;
-        $params = array_merge(['json' => 1], compact('text', 'to'));
+        $modelParams = compact('text', 'to');
+        $params = array_merge(['json' => 1, 'to' => implode(',', $to)], compact('text'));
         $recipients = 0;
         $response = null;
         $debug = null;
 
         try {
             $res = $this->client->post('sms', [RequestOptions::JSON => $params]);
-            $contents = $res->getBody()->getContents();
-            $response = json_decode($contents);
+            $response = $res->getBody()->getContents();
+            (new Sms)->fill(array_merge($modelParams, compact('response')))->save();
+            $response = json_decode($response);
+
             Log::info('sms77 responded to our SMS dispatch.', compact('response'));
 
             if (is_object($response)) {
