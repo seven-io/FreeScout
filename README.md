@@ -43,9 +43,23 @@ See the example [screenshot](_screenshots/configuration.png).
 
 ## Send Bulk SMS
 
-1. Go **Mange -> sms77**
+1. Go **Manage -> sms77**
 2. Enter the message text to send
-3. Click on **Save** to start the SMS dispatch
+3. Click on **Send** to start the SMS dispatch
+
+### User Filters
+Narrow down users by the following properties:
+- Locale
+- Role
+
+## Send SMS to User
+
+1. Go **Manage -> Users**
+2. Click on a user
+3. Click **Send SMS** in the sidebar
+4. Enter a text and submit by clicking **Send**
+
+*Note:* If the user has no phone associated, the **Send SMS** menu entry won't get shown.
 
 See the example [screenshot](_screenshots/sms_bulk.png).
 

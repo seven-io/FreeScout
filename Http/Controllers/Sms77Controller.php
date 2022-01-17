@@ -32,6 +32,35 @@ class Sms77Controller extends Controller {
     }
 
     /**
+     * @param int $id
+     * @return View
+     */
+    public function user(int $id): View {
+        return view('sms77::user', [
+            'msg' => (object)[
+                'flash' => 0,
+                'text' => '',
+            ],
+            'user' => User::findOrFail($id),
+        ]);
+    }
+
+    /**
+     * @param int $id
+     * @param Request $request
+     * @return View
+     * @throws GuzzleException
+     */
+    public function userSubmit(int $id, Request $request): View {
+        /** @var User $user */
+        $user = User::findOrFail($id);
+
+        (new HttpClient)->sms($request, $user->getAttribute('phone'));
+
+        return $this->user($id);
+    }
+
+    /**
      * Show the form for creating a new resource.
      * @param Request $request
      * @return View

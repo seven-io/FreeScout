@@ -4,8 +4,10 @@ namespace Modules\Sms77\Providers;
 
 use App\Misc\Helper;
 use App\Option;
+use App\User;
 use Eventy;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 use Modules\Sms77\Misc\Config;
 use Modules\Sms77\Misc\HttpClient;
@@ -26,7 +28,7 @@ class Sms77ServiceProvider extends ServiceProvider {
      */
     public function boot() {
         $this->registerConfig();
-        $this->registerViews();
+        $this->loadViewsFrom(__DIR__ . '/../Resources/views', 'sms77');
         $this->hooks();
     }
 
@@ -42,13 +44,6 @@ class Sms77ServiceProvider extends ServiceProvider {
     }
 
     /**
-     * @return void
-     */
-    public function registerViews() {
-        $this->loadViewsFrom(__DIR__ . '/../Resources/views', 'sms77');
-    }
-
-    /**
      * Module hooks.
      * @return void
      */
@@ -57,6 +52,27 @@ class Sms77ServiceProvider extends ServiceProvider {
             echo '<li class=\'' . Helper::menuSelectedHtml('sms77') . '\'>
                 <a href=\'' . route('sms77.index') . '\'>sms77</a>
             </li>';
+        });
+
+        Eventy::addAction('user.profile.menu.after_profile', function (User $user) {
+            $phone = $user->getAttribute('phone');
+
+            if (empty($phone)) return;
+
+            //if (Route::currentRouteName() !== 'users.profile') return;
+            $class = Route::currentRouteName() === 'sms77.sms_user' ? 'active' : '';
+            $heading = __('Send SMS');
+            //$route = route('sms77.sms_user', compact('user'));
+            $route = route('sms77.sms_user', ['id' => $user->id]);
+            $html = <<< HTM
+                 <li class='$class'>
+                     <a href='$route'>
+                         <i class='glyphicon glyphicon-user'></i>
+                         $heading
+                     </a>
+                 </li>
+HTM;
+            echo $html;
         });
 
         Eventy::addFilter('settings.sections', [$this, 'addFilterSettingsSections'], 15);
