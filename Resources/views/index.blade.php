@@ -41,6 +41,21 @@
                     @include('partials/field_error', ['field'=>'role'])
                 </div>
             </div>
+
+            <div class='form-group{{ $errors->has('locale') ? ' has-error' : '' }}'>
+                <label class='col-sm-2 control-label' for='locale'>
+                    @lang('Language')
+                </label>
+
+                <div class='col-sm-10'>
+                    <select class='form-control' id='locale' name='locale'>
+                        <option value=''></option>
+                        @include('partials/locale_options', ['selected' => old('locale')])
+                    </select>
+
+                    @include('partials/field_error', ['field'=>'locale'])
+                </div>
+            </div>
         </fieldset>
 
         <fieldset>
@@ -53,7 +68,8 @@
                     <div class='control-group'>
                         <div class='controls'>
                             <input type='checkbox' name='flash' value='1' id='flash'
-                                   @if (old('flash', $msg->flash))checked='checked'@endif />
+                                   @if (old('flash', $msg->flash))checked='checked'@endif
+                            />
                         </div>
                     </div>
                 </div>

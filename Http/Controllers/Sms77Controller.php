@@ -21,6 +21,7 @@ class Sms77Controller extends Controller {
     public function index(): View {
         $msg = (object)[
             'flash' => 0,
+            'locale' => null,
             'role' => null,
             'text' => '',
         ];
@@ -39,13 +40,14 @@ class Sms77Controller extends Controller {
     public function submit(Request $request): View {
         $builder = User::query()->where('phone', '<>', '');
 
-        $role = $request->post('role');
-        if ($role) $builder = $builder->where('role', '=', $role);
+        $filters = ['locale', 'role'];
 
-        (new HttpClient)->sms(
-            $request,
-            ...$builder->pluck('phone')->unique()->all()
-        );
+        foreach ($filters as $filter) {
+            $value = $request->post($filter);
+            if ($value) $builder = $builder->where($filter, '=', $value);
+        }
+
+        (new HttpClient)->sms($request, ...$builder->pluck('phone')->unique()->all());
 
         return $this->index();
     }

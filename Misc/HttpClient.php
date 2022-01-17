@@ -63,51 +63,61 @@ class HttpClient {
      * @throws GuzzleException
      */
     public function sms(Request $request, ...$to): int {
-        $text = $request->post('text');
         $code = 0;
-        $cost = 0.0;
-        $msgCount = 0.0;
-        $modelParams = compact('text', 'to');
-        $params = array_merge([
-            'flash' => $request->post('flash', 0),
-            'from' => Config::getSmsFrom(),
-            'json' => 1,
-            'to' => implode(',', $to),
-        ], compact('text'));
-        $recipients = 0;
-        $response = null;
-        $debug = null;
 
-        try {
-            $res = $this->client->post('sms', [RequestOptions::JSON => $params]);
-            $response = $res->getBody()->getContents();
-            (new Sms)->fill(array_merge($modelParams, compact('response')))->save();
-            $response = json_decode($response);
-
-            Log::info('sms77 responded to our SMS dispatch.', compact('response'));
-
-            if (is_object($response)) {
-                $code = $response->success;
-                $cost = (float)$response->total_price;
-                $debug = (bool)$response->debug;
-
-                foreach ($response->messages as $message) {
-                    $msgCount += $message->parts;
-                    $recipients++;
-                }
-            } else $code = $response;
-        } catch (Exception $e) {
-            Log::error('sms77 failed to send SMS.', ['error' => $e->getMessage()]);
+        if (empty($to)) {
+            $success = false;
+            $code = 301;
+            $text = __('No recipients found for given filters.');
         }
+        else {
+            $text = $request->post('text');
+            $cost = 0.0;
+            $msgCount = 0.0;
+            $modelParams = compact('text', 'to');
+            $params = array_merge([
+                'flash' => $request->post('flash', 0),
+                'from' => Config::getSmsFrom(),
+                'json' => 1,
+                'to' => implode(',', $to),
+            ], compact('text'));
+            $recipients = 0;
+            $response = null;
+            $debug = null;
 
-        $success = true === $debug || $msgCount;
+            try {
+                $res = $this->client->post('sms', [RequestOptions::JSON => $params]);
+                $response = $res->getBody()->getContents();
+                (new Sms)->fill(array_merge($modelParams, compact('response')))->save();
+                $response = json_decode($response);
+
+                Log::info('sms77 responded to our SMS dispatch.', compact('response'));
+
+                if (is_object($response)) {
+                    $code = $response->success;
+                    $cost = (float)$response->total_price;
+                    $debug = (bool)$response->debug;
+
+                    foreach ($response->messages as $message) {
+                        $msgCount += $message->parts;
+                        $recipients++;
+                    }
+                } else $code = $response;
+            } catch (Exception $e) {
+                Log::error('sms77 failed to send SMS.', ['error' => $e->getMessage()]);
+            }
+
+            $success = true === $debug || $msgCount;
+
+            $text = $success ?
+                __('Sent :msgCount SMS to :recipients recipients for :cost €',
+                    compact('cost', 'msgCount', 'recipients'))
+                : __('Failed to send SMS with error code :code', compact('code'));
+        }
 
         Session::flash('flashes_floating', [[
             'role' => User::ROLE_ADMIN,
-            'text' => $success ?
-                __('Sent :msgCount SMS to :recipients recipients for :cost €',
-                    compact('cost', 'msgCount', 'recipients'))
-                : __('Failed to send SMS with error code :code', compact('code')),
+            'text' => $text,
             'type' => $success ? 'success' : 'danger',
         ]]);
 
