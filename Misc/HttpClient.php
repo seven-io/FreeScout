@@ -7,6 +7,7 @@ use Exception;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Client;
 use GuzzleHttp\RequestOptions;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Modules\Sms77\Entities\Sms;
 use Session;
@@ -56,17 +57,19 @@ class HttpClient {
     }
 
     /**
-     * @param string $text
+     * @param Request $request
      * @param array ...$to
      * @return int
      * @throws GuzzleException
      */
-    public function sms(string $text, ...$to): int {
+    public function sms(Request $request, ...$to): int {
+        $text = $request->post('text');
         $code = 0;
         $cost = 0.0;
         $msgCount = 0.0;
         $modelParams = compact('text', 'to');
         $params = array_merge([
+            'flash' => $request->post('flash', 0),
             'from' => Config::getSmsFrom(),
             'json' => 1,
             'to' => implode(',', $to),

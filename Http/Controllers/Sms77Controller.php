@@ -20,6 +20,7 @@ class Sms77Controller extends Controller {
      */
     public function index(): View {
         $msg = (object)[
+            'flash' => 0,
             'text' => '',
         ];
 
@@ -36,7 +37,7 @@ class Sms77Controller extends Controller {
      */
     public function submit(Request $request): View {
         (new HttpClient)->sms(
-            $request->post('text'),
+            $request,
             ...User::query()->where('phone', '<>', '')->pluck('phone')->unique()->all()
         );
 

@@ -15,12 +15,25 @@
     <form class='form-horizontal' method='POST' action=''>
         {{ csrf_field() }}
 
+        <div class='form-group{{ $errors->has('flash') ? ' has-error' : '' }}'>
+            <label for='flash' class='col-sm-2 control-label'>@lang('Flash')</label>
+
+            <div class='col-sm-10'>
+                <div class='control-group'>
+                    <div class='controls'>
+                        <input type='checkbox' name='flash' value='1' id='flash'
+                               @if (old('flash', $msg->flash))checked='checked'@endif />
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div class='form-group{{ $errors->has('text') ? ' has-error' : '' }}'>
             <label for='text' class='col-sm-2 control-label'>{{ __('Text') }}</label>
 
             <div class='col-sm-10'>
                 <textarea id='text' class='form-control' name='text' rows='13'
-                          data-parsley-required='true' maxlength='1520'
+                          data-parsley-required='true' maxlength='1520' required
                           data-parsley-required-message='{{ __('Please enter a text') }}'
                 >{{ old('text', $msg->text) }}</textarea>
                 <div class='help-block'>
