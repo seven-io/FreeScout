@@ -10,7 +10,7 @@ class Sms extends Model {
      * @var array $casts
      */
     protected $casts = [
-        'response' => 'object',
+        //'response' => 'array',
         'to' => 'array',
     ];
 
@@ -41,7 +41,7 @@ class Sms extends Model {
      * @return string
      */
     public function getCleanResponse(): string {
-        $response = $this->response;
+        $response = json_decode($this->response);
         unset($response->sms_type);
 
         foreach ($response->messages as $message) {
@@ -49,7 +49,7 @@ class Sms extends Model {
                 $message->encoding,
                 $message->label,
                 $message->sender,
-                $message->text,
+                $message->text
             );
         }
 

@@ -1,6 +1,5 @@
 <?php
 
-return [
-    'apiKey' => env('SMS77_API_KEY', ''),
+return Option::get('sms77', [
     'name' => 'sms77',
-];
+]);

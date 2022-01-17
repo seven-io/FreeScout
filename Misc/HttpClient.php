@@ -12,18 +12,14 @@ use Modules\Sms77\Entities\Sms;
 use Session;
 
 class HttpClient {
-    /**
-     * @var string $apiKey
-     */
+    /** @var string $apiKey */
     private $apiKey;
 
-    /**
-     * @var Client $client
-     */
+    /** @var Client $client */
     private $client;
 
     public function __construct(string $apiKey = '') {
-        $this->apiKey = $apiKey ?: (new Config)->getApiKey();
+        $this->apiKey = $apiKey ?: Config::getApiKey();
         $this->client = $this->buildClient();
     }
 
@@ -70,7 +66,11 @@ class HttpClient {
         $cost = 0.0;
         $msgCount = 0.0;
         $modelParams = compact('text', 'to');
-        $params = array_merge(['json' => 1, 'to' => implode(',', $to)], compact('text'));
+        $params = array_merge([
+            'from' => Config::getSmsFrom(),
+            'json' => 1,
+            'to' => implode(',', $to),
+        ], compact('text'));
         $recipients = 0;
         $response = null;
         $debug = null;

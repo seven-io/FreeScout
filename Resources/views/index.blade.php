@@ -1,11 +1,11 @@
 @extends('layouts.app')
 
-@section('title', __(':vendor Bulk SMS', ['vendor' => config('sms77.name')]))
+@section('title', __(':vendor Bulk SMS', ['vendor' => 'sms77']))
 @section('content_class', 'content-full')
 
 @section('content')
     <div class='flexy-container'>
-        <h1>{{__('Bulk SMS by :vendor', ['vendor' => config('sms77.name')])}}</h1>
+        <h1>{{__('Bulk SMS by :vendor', ['vendor' => 'sms77'])}}</h1>
 
         <p class='text-info margin-0'>
             {{__('Use this form to send SMS to all your users at once.')}}

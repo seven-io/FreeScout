@@ -2,29 +2,42 @@
 
 namespace Modules\Sms77\Misc;
 
+use App\Option;
+
 class Config {
-    /**
-     * @var array $config
-     */
-    private $config;
-
-    public function __construct() {
-        $cfg = config('sms77');
-        if (!empty($cfg['apiKey'])) $cfg['apiKey'] = decrypt($cfg['apiKey']);
-        $this->config = $cfg;
-    }
-
     /**
      * @return string
      */
-    public function getApiKey(): string {
-        return $this->config['apiKey'];
+    public static function getApiKey(): string {
+        return decrypt(Option::get('sms77_apiKey'));
     }
 
     /**
+     * Returns SMS related configuration.
      * @return array
      */
-    public function get(): array {
-        return $this->config;
+    public static function getSms(): array {
+        return [
+            'from' => self::getSmsFrom(),
+        ];
+    }
+
+    /**
+     * Returns the SMS sender identifier.
+     * @return string
+     */
+    public static function getSmsFrom(): string {
+        return Option::get('sms77_sms_from');
+    }
+
+    /**
+     * Returns the whole configuration.
+     * @return array
+     */
+    public static function get(): array {
+        return [
+            'apiKey' => self::getApiKey(),
+            'sms' => self::getSms(),
+        ];
     }
 }

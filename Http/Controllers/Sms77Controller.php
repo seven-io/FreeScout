@@ -5,7 +5,6 @@ namespace Modules\Sms77\Http\Controllers;
 use App\User;
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
 use Illuminate\View\View;
 use Modules\Sms77\Entities\Sms;

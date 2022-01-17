@@ -3,6 +3,7 @@
 namespace Modules\Sms77\Providers;
 
 use App\Misc\Helper;
+use App\Option;
 use Eventy;
 use Illuminate\Http\Request;
 use Illuminate\Support\ServiceProvider;
@@ -10,7 +11,7 @@ use Modules\Sms77\Misc\Config;
 use Modules\Sms77\Misc\HttpClient;
 use Session;
 
-define('DM_MODULE', 'sms77');
+define('SMS77_MODULE', 'sms77');
 
 class Sms77ServiceProvider extends ServiceProvider {
     /**
@@ -40,6 +41,9 @@ class Sms77ServiceProvider extends ServiceProvider {
         $this->mergeConfigFrom($cfgPath, 'sms77');
     }
 
+    /**
+     * @return void
+     */
     public function registerViews() {
         $this->loadViewsFrom(__DIR__ . '/../Resources/views', 'sms77');
     }
@@ -55,7 +59,18 @@ class Sms77ServiceProvider extends ServiceProvider {
             </li>';
         });
 
-        $this->registerSettings();
+        Eventy::addFilter('settings.sections', [$this, 'addFilterSettingsSections'], 15);
+
+        Eventy::addFilter('settings.section_settings',
+            [$this, 'addFilterSettingsSectionSettings'], 20, 2);
+
+        Eventy::addFilter('settings.section_params',
+            [$this, 'addFilterSettingsSectionParams'], 20, 2);
+
+        Eventy::addFilter('settings.view', [$this, 'addFilterSettingsView'], 20, 2);
+
+        Eventy::addFilter('settings.before_save', [$this, 'addFilterSettingsBeforeSave'],
+            20, 3);
     }
 
     /**
@@ -67,59 +82,66 @@ class Sms77ServiceProvider extends ServiceProvider {
     }
 
     /**
-     * @return void
-     */
-    private function registerSettings() {
-        Eventy::addFilter('settings.sections', function ($sections) {
-            $sections['sms77'] = [
-                'icon' => 'envelope',
-                'order' => 200,
-                'title' => 'sms77',
-            ];
-
-            return $sections;
-        }, 15);
-
-        Eventy::addFilter('settings.section_settings', function ($settings, $section) {
-            if ($section === 'sms77')
-                $settings = array_merge($settings, (new Config)->get());
-            return $settings;
-        }, 20, 2);
-
-        Eventy::addFilter('settings.section_params', function ($params, $section) {
-            if ($section !== 'sms77') return $params;
-
-            $params['settings'] = [
-                'apiKey' => [
-                    'env' => 'SMS77_API_KEY',
-                ],
-            ];
-
-            return $params;
-        }, 20, 2);
-
-        Eventy::addFilter('settings.view', function ($view, $section) {
-            return $section === 'sms77' ? 'sms77::settings' : $view;
-        }, 20, 2);
-
-        Eventy::addFilter('settings.before_save', function (Request $request, $section, $settings) {
-            if ($section !== 'sms77') return $request;
-            $settings = $request->settings;
-            $apiKey = trim($settings['apiKey']);
-            $oldApiKey = (new Config)->getApiKey();
-
-            if ($oldApiKey !== $apiKey) $settings['apiKey'] = encrypt(
-                (new HttpClient($apiKey))->balance() ? $apiKey : $oldApiKey);
-
-            return $request->merge(compact('settings'));
-        }, 20, 3);
-    }
-
-    /**
      * Get the services provided by the provider.
      * @return array
      */
     public function provides(): array {
         return [];
+    }
+
+    public function addFilterSettingsSections(array $sections): array {
+        $sections[SMS77_MODULE] = [
+            'icon' => 'envelope',
+            'order' => 200,
+            'title' => SMS77_MODULE,
+        ];
+
+        return $sections;
+    }
+
+    public function addFilterSettingsSectionSettings(
+        array $settings, string $section): array {
+        return $section === SMS77_MODULE
+            ? [
+                'sms77_apiKey' => Option::get('sms77_apiKey'),
+                'sms77_sms_from' => Option::get('sms77_sms_from'),
+            ] : $settings;
+    }
+
+    public function addFilterSettingsSectionParams(
+        array $params, string $section): array {
+        if ($section !== SMS77_MODULE) return $params;
+
+        return [
+            'settings' => [
+                'apiKey' => [
+                    'encrypt' => true,
+                ],
+                'sms_from',
+            ],
+            'validator_rules' => [
+                'settings.sms77_apiKey' => 'required|max:90',
+                'settings.sms77_sms_from' => 'required|max:16',
+            ],
+        ];
+    }
+
+    public function addFilterSettingsView(string $view, string $section): string {
+        return $section === 'sms77' ? 'sms77::settings' : $view;
+    }
+
+    public function addFilterSettingsBeforeSave(
+        Request $request, string $section, array $settings): Request {
+        if ($section !== 'sms77') return $request;
+
+        $settings = $request->settings;
+        $settings['sms77_sms_from'] = trim($settings['sms77_sms_from']);
+        $apiKey = trim($settings['sms77_apiKey']);
+        $oldApiKey = Config::getApiKey();
+
+        if ($oldApiKey !== $apiKey) $settings['sms77_apiKey'] = encrypt(
+            (new HttpClient($apiKey))->balance() ? $apiKey : $oldApiKey);
+
+        return $request->replace(compact('settings'));
     }
 }
