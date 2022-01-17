@@ -33,7 +33,7 @@
                             @lang('API Key')
                         </label>
 
-                        <div class='col-sm-6'{{ $errors->has('settings.sms77_apiKey') ? ' has-error' : '' }}>
+                        <div class='col-sm-6{{ $errors->has('settings.sms77_apiKey') ? ' has-error' : '' }}'>
                             <input autocomplete='off' autofocus class='form-control'
                                    id='apiKey'
                                    maxlength='90' name='settings[sms77_apiKey]' required
@@ -42,10 +42,8 @@
                             />
 
                             <p class='form-help'>
-                                @lang('Create one at :url.', ['url' => 'https://app.sms77.io/developer'])
-                                @lang('Uses environment variable :envKey as default value.', [
-                                    'envKey' => 'SMS77_API_KEY'
-                                ])
+                                @lang('Can be created at :url.',
+                                    ['url' => 'https://app.sms77.io/developer'])
                             </p>
                         </div>
                     </div>
@@ -59,7 +57,7 @@
                             @lang('From')
                         </label>
 
-                        <div class='col-sm-6'{{ $errors->has('settings.sms77_sms_from') ? ' has-error' : '' }}>
+                        <div class='col-sm-6{{ $errors->has('settings.sms77_sms_from') ? ' has-error' : '' }}'>
                             <input class='form-control' id='sms[from]' maxlength='16'
                                    name='settings[sms77_sms_from]'
                                    value='{{ $settings['sms77_sms_from'] }}'

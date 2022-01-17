@@ -21,6 +21,7 @@ class Sms77Controller extends Controller {
     public function index(): View {
         $msg = (object)[
             'flash' => 0,
+            'role' => null,
             'text' => '',
         ];
 
@@ -36,9 +37,14 @@ class Sms77Controller extends Controller {
      * @throws GuzzleException
      */
     public function submit(Request $request): View {
+        $builder = User::query()->where('phone', '<>', '');
+
+        $role = $request->post('role');
+        if ($role) $builder = $builder->where('role', '=', $role);
+
         (new HttpClient)->sms(
             $request,
-            ...User::query()->where('phone', '<>', '')->pluck('phone')->unique()->all()
+            ...$builder->pluck('phone')->unique()->all()
         );
 
         return $this->index();
