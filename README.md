@@ -23,6 +23,8 @@ and extract the archive to `/path/to/freescout/Modules/`.
 
 - `cd /var/www/html/Modules`
 - `git clone https://github.com/sms77io/FreeScout Sms77`
+- `cd Sms77`
+- `composer update`
 
 **Attention:** The plugin folder is *case-sensitive*.
 
