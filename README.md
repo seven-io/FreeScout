@@ -41,6 +41,10 @@ See the example [screenshot](_screenshots/configuration.png).
 
 ## Usage
 
+You can use placeholders which resolve to the user property as long as it exists.
+
+*Example:* Dear {{first_name}} {{last_name}} resolves to Tommy Tester.
+
 ## Send Bulk SMS
 
 1. Go **Manage -> sms77**

@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\View\View;
 use Modules\Sms77\Entities\Sms;
-use Modules\Sms77\Misc\HttpClient;
+use Modules\Sms77\Misc\Messenger;
 
 class Sms77Controller extends Controller {
     public function __construct() {
@@ -55,7 +55,7 @@ class Sms77Controller extends Controller {
         /** @var User $user */
         $user = User::findOrFail($id);
 
-        (new HttpClient)->sms($request, $user->getAttribute('phone'));
+        (new Messenger)->sms($request, $user->getAttribute('phone'));
 
         return $this->user($id);
     }
@@ -76,7 +76,7 @@ class Sms77Controller extends Controller {
             if ($value) $builder = $builder->where($filter, '=', $value);
         }
 
-        (new HttpClient)->sms($request, ...$builder->pluck('phone')->unique()->all());
+        (new Messenger)->sms($request, ...$builder->pluck('phone')->unique()->all());
 
         return $this->index();
     }

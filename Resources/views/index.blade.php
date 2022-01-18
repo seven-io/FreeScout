@@ -12,7 +12,7 @@
         </p>
     </div>
 
-    <form class='form-horizontal' method='POST' action=''>
+    <form action='' class='form-horizontal' method='POST'>
         {{ csrf_field() }}
 
         <fieldset>
@@ -58,9 +58,7 @@
             </div>
         </fieldset>
 
-        @include('sms77::partials.sms_settings')
-        @include('sms77::partials.sms_text')
-        @include('sms77::partials.submit')
+        @include('sms77::partials.sms')
     </form>
 
     <hr/>

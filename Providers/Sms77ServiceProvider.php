@@ -10,7 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 use Modules\Sms77\Misc\Config;
-use Modules\Sms77\Misc\HttpClient;
+use Modules\Sms77\Misc\Messenger;
 use Session;
 
 define('SMS77_MODULE', 'sms77');
@@ -156,7 +156,7 @@ HTM;
         $oldApiKey = Config::getApiKey();
 
         if ($oldApiKey !== $apiKey) $settings['sms77_apiKey'] = encrypt(
-            (new HttpClient($apiKey))->balance() ? $apiKey : $oldApiKey);
+            (new Messenger($apiKey))->balance() ? $apiKey : $oldApiKey);
 
         return $request->replace(compact('settings'));
     }
