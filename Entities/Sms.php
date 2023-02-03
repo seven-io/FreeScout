@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Sms77\Entities;
+namespace Modules\Seven\Entities;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -10,7 +10,6 @@ class Sms extends Model {
      * @var array $casts
      */
     protected $casts = [
-        //'response' => 'array',
         'to' => 'array',
     ];
 
@@ -34,7 +33,7 @@ class Sms extends Model {
      * The table associated with the model.
      * @var string $table
      */
-    protected $table = 'sms77_sms';
+    protected $table = 'seven_sms';
 
     /**
      * Returns the response with duplicated values removed.

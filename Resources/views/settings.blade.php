@@ -1,10 +1,10 @@
 @extends('layouts.app')
 
-@section('title', __(':vendor Settings', ['vendor' => 'sms77']))
+@section('title', __(':vendor Settings', ['vendor' => 'seven']))
 
 @section('content')
     <div class='section-heading'>
-        sms77
+        seven
     </div>
 
     <div class='row-container form-container'>
@@ -33,17 +33,17 @@
                             @lang('API Key')
                         </label>
 
-                        <div class='col-sm-6{{ $errors->has('settings.sms77_apiKey') ? ' has-error' : '' }}'>
+                        <div class='col-sm-6{{ $errors->has('settings.seven_apiKey') ? ' has-error' : '' }}'>
                             <input autocomplete='off' autofocus class='form-control'
                                    id='apiKey'
-                                   maxlength='90' name='settings[sms77_apiKey]' required
+                                   maxlength='90' name='settings[seven_apiKey]' required
                                    type='password'
-                                   value='{{ $settings['sms77_apiKey'] }}'
+                                   value='{{ $settings['seven_apiKey'] }}'
                             />
 
                             <p class='form-help'>
                                 @lang('Can be created at :url.',
-                                    ['url' => 'https://app.sms77.io/developer'])
+                                    ['url' => 'https://app.seven.io/developer'])
                             </p>
                         </div>
                     </div>
@@ -57,10 +57,10 @@
                             @lang('From')
                         </label>
 
-                        <div class='col-sm-6{{ $errors->has('settings.sms77_sms_from') ? ' has-error' : '' }}'>
+                        <div class='col-sm-6{{ $errors->has('settings.seven_sms_from') ? ' has-error' : '' }}'>
                             <input class='form-control' id='sms[from]' maxlength='16'
-                                   name='settings[sms77_sms_from]'
-                                   value='{{ $settings['sms77_sms_from'] }}'
+                                   name='settings[seven_sms_from]'
+                                   value='{{ $settings['seven_sms_from'] }}'
                             />
 
                             <p class='form-help'>
@@ -68,7 +68,7 @@
                                 @lang('Must not exceed 11 alphanumeric or 16 numeric characters.')
                                 @lang('Country specific restrictions may apply.')
                                 @lang('Read more about it in our helpdesk at :url.', [
-                                    'url' => 'https://help.sms77.io/en/set-sender-id'
+                                    'url' => 'https://help.seven.io/en/set-sender-id'
                                 ])
                             </p>
                         </div>

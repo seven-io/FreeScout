@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Sms77\Misc;
+namespace Modules\Seven\Misc;
 
 use App\Option;
 
@@ -9,7 +9,7 @@ class Config {
      * @return string
      */
     public static function getApiKey(): string {
-        return decrypt(Option::get('sms77_apiKey'));
+        return decrypt(Option::get('seven_apiKey'));
     }
 
     /**
@@ -27,7 +27,7 @@ class Config {
      * @return string
      */
     public static function getSmsFrom(): string {
-        return Option::get('sms77_sms_from');
+        return Option::get('seven_sms_from');
     }
 
     /**

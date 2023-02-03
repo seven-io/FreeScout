@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Sms77\Misc;
+namespace Modules\Seven\Misc;
 
 use App\User;
 use Exception;
@@ -9,7 +9,7 @@ use GuzzleHttp\Client;
 use GuzzleHttp\RequestOptions;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
-use Modules\Sms77\Entities\Sms;
+use Modules\Seven\Entities\Sms;
 use Session;
 
 class Messenger {
@@ -29,7 +29,7 @@ class Messenger {
      */
     private function buildClient(): Client {
         return new Client([
-            'base_uri' => 'https://gateway.sms77.io/api/',
+            'base_uri' => 'https://gateway.seven.io/api/',
             RequestOptions::HEADERS => [
                 'SentWith' => 'FreeScout',
                 'X-Api-Key' => $this->apiKey,
@@ -119,7 +119,7 @@ class Messenger {
                     ->save();
                 $response = json_decode($response);
 
-                Log::info('sms77 responded to SMS dispatch.', compact('response'));
+                Log::info('seven responded to SMS dispatch.', compact('response'));
 
                 if (is_object($response)) {
                     $cost += (float)$response->total_price;
@@ -130,7 +130,7 @@ class Messenger {
                     }
                 }
             } catch (Exception $e) {
-                Log::error('sms77 failed to send SMS.', ['error' => $e->getMessage()]);
+                Log::error('seven failed to send SMS.', ['error' => $e->getMessage()]);
             }
         }
 

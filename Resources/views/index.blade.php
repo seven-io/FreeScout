@@ -1,11 +1,11 @@
 @extends('layouts.app')
 
-@section('title', __(':vendor Bulk SMS', ['vendor' => 'sms77']))
+@section('title', __(':vendor Bulk SMS', ['vendor' => 'seven']))
 @section('content_class', 'content-full')
 
 @section('content')
     <div class='flexy-container'>
-        <h1>@lang('Bulk SMS by :vendor', ['vendor' => 'sms77'])</h1>
+        <h1>@lang('Bulk SMS by :vendor', ['vendor' => 'seven'])</h1>
 
         <p class='text-info margin-0'>
             @lang('Use this form to send SMS to all your users at once.')
@@ -58,7 +58,7 @@
             </div>
         </fieldset>
 
-        @include('sms77::partials.sms')
+        @include('seven::partials.sms')
     </form>
 
     <hr/>

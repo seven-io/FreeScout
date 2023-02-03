@@ -22,7 +22,7 @@
             <form action='' method='POST'>
                 {{ csrf_field() }}
 
-                @include('sms77::partials.sms')
+                @include('seven::partials.sms')
             </form>
         </div>
     </div>

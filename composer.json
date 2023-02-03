@@ -1,34 +1,34 @@
 {
     "authors": [
         {
-            "email": "support@sms77.io",
-            "homepage": "https://www.sms77.io",
-            "name": "sms77 e.K.",
+            "email": "support@seven.io",
+            "homepage": "https://www.seven.io",
+            "name": "seven communications GmbH & Co. KG",
             "role": "Developer"
         }
     ],
     "autoload": {
         "psr-4": {
-            "Modules\\Sms77\\": ""
+            "Modules\\Seven\\": ""
         }
     },
-    "description": "FreeScout module for sending SMS via sms77",
+    "description": "FreeScout module for sending SMS via seven",
     "extra": {
         "laravel": {
             "aliases": {},
             "providers": [
-                "Modules\\Sms77\\Providers\\Sms77ServiceProvider"
+                "SevenServiceProvider"
             ]
         }
     },
-    "homepage": "https://github.com/sms77io/FreeScout",
+    "homepage": "https://github.com/seven-io/FreeScout",
     "keywords": [
         "sms",
         "freescout"
     ],
     "license": "MIT",
     "minimum-stability": "dev",
-    "name": "sms77io/freescout",
+    "name": "sevenio/freescout",
     "require": {
         "ext-ctype": "*",
         "ext-curl": "*",
@@ -37,10 +37,10 @@
         "php": ">=7.0"
     },
     "support": {
-        "docs": "https://github.com/sms77io/FreeScout",
-        "email": "support@sms77.io",
-        "rss": "https://www.sms77.io/de/feed/",
-        "source": "https://github.com/sms77io/FreeScout"
+        "docs": "https://github.com/seven-io/FreeScout",
+        "email": "support@seven.io",
+        "rss": "https://www.seven.io/de/feed/",
+        "source": "https://github.com/seven-io/FreeScout"
     },
     "type": "library"
 }

@@ -1,21 +1,21 @@
 {
     "active": 0,
-    "alias": "sms77",
+    "alias": "seven",
     "aliases": {},
-    "author": "sms77 e.K.",
-    "authorUrl": "https://www.sms77.io",
-    "description": "Send SMS via sms77",
+    "author": "seven communications GmbH & Co. KG",
+    "authorUrl": "https://www.seven.io",
+    "description": "Send SMS via seven",
     "detailsUrl": "",
     "files": ["start.php"],
     "keywords": ["sms"],
-    "img": "/modules/sms77/logo.svg",
+    "img": "https://www.seven.io/wp-content/uploads/Logo.svg",
     "license": "MIT",
-    "name": "Sms77",
+    "name": "seven",
     "order": 0,
     "providers": [
-        "Modules\\Sms77\\Providers\\Sms77ServiceProvider"
+        "Modules\\Seven\\Providers\\SevenServiceProvider"
     ],
     "requiredAppVersion": "1.0.2",
     "requires": [],
-    "version": "1.0.0"
+    "version": "2.0.0"
 }

@@ -1,16 +1,16 @@
 <?php
 
-namespace Modules\Sms77\Http\Controllers;
+namespace Modules\Seven\Http\Controllers;
 
 use App\User;
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\View\View;
-use Modules\Sms77\Entities\Sms;
-use Modules\Sms77\Misc\Messenger;
+use Modules\Seven\Entities\Sms;
+use Modules\Seven\Misc\Messenger;
 
-class Sms77Controller extends Controller {
+class SevenController extends Controller {
     public function __construct() {
         $this->middleware('auth');
     }
@@ -26,7 +26,7 @@ class Sms77Controller extends Controller {
             'text' => '',
         ];
 
-        return view('sms77::index', array_merge(compact('msg'), [
+        return view('seven::index', array_merge(compact('msg'), [
             'messages' => Sms::all(),
         ]));
     }
@@ -36,7 +36,7 @@ class Sms77Controller extends Controller {
      * @return View
      */
     public function user(int $id): View {
-        return view('sms77::user', [
+        return view('seven::user', [
             'msg' => (object)[
                 'flash' => 0,
                 'text' => '',
