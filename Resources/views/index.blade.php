@@ -1,16 +1,14 @@
 @extends('layouts.app')
 
-@section('title', __(':vendor Bulk SMS', ['vendor' => 'seven']))
+@section('title', __('bulkSmsTitle', ['vendor' => 'seven']))
 @section('content_class', 'content-full')
 
 @section('content')
-    <div class='flexy-container'>
-        <h1>@lang('Bulk SMS by :vendor', ['vendor' => 'seven'])</h1>
+    <img alt='' src='https://www.seven.io/wp-content/uploads/Logo.svg' />
 
-        <p class='text-info margin-0'>
-            @lang('Use this form to send SMS to all your users at once.')
-        </p>
-    </div>
+    <h1>@lang('bulkSmsHeading')</h1>
+
+    <p class='text-info margin-0'>@lang('bulkSmsTeaser')</p>
 
     <form action='' class='form-horizontal' method='POST'>
         {{ csrf_field() }}
@@ -38,7 +36,7 @@
                         </option>
                     </select>
 
-                    @include('partials/field_error', ['field'=>'role'])
+                    @include('partials/field_error', ['field' => 'role'])
                 </div>
             </div>
 
@@ -53,7 +51,7 @@
                         @include('partials/locale_options', ['selected' => old('locale')])
                     </select>
 
-                    @include('partials/field_error', ['field'=>'locale'])
+                    @include('partials/field_error', ['field' => 'locale'])
                 </div>
             </div>
         </fieldset>
@@ -63,19 +61,17 @@
 
     <hr/>
 
-    <h2>@lang('History')</h2>
+    <h2>@lang('bulkSmsHistoryHeading')</h2>
 
     @if(count($messages))
         <table class='table table-striped'>
-            <caption>
-                @lang('This table represents the sent messages.')
-            </caption>
+            <caption>@lang('bulkSmsHistoryCaption')</caption>
             <thead>
             <tr>
-                <th>@lang('ID')</th>
-                <th>@lang('To')</th>
-                <th>@lang('Text')</th>
-                <th>@lang('Response')</th>
+                <th>@lang('bulkSmsHistoryId')</th>
+                <th>@lang('bulkSmsHistoryTo')</th>
+                <th>@lang('bulkSmsHistoryText')</th>
+                <th>@lang('bulkSmsHistoryApiResponse')</th>
             </tr>
             </thead>
             <tbody>
@@ -90,8 +86,6 @@
             </tbody>
         </table>
     @else
-        <p class='text-help'>
-            @lang('It seems that no messages have been sent yet.')
-        </p>
+        <p class='text-help'>@lang('bulkSmsHistoryEmpty')</p>
     @endif
 @stop

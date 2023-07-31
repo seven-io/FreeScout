@@ -6,8 +6,7 @@ Adds the functionality of sending SMS to your users.
 
 ## Prerequisites
 
-- An API key from [seven](https://www.seven.io) which you can create in
-  your [developer dashboard](https://app.seven.io/developer)
+- An [API key](https://help.seven.io/en/api-key-access) from [seven](https://www.seven.io)
 - [FreeScout](https://freescout.net/) installation (tested with 1.7.x)
 - PHP 7.0+
 

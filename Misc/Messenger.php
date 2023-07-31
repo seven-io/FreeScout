@@ -4,7 +4,6 @@ namespace Modules\Seven\Misc;
 
 use App\User;
 use Exception;
-use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Client;
 use GuzzleHttp\RequestOptions;
 use Illuminate\Http\Request;
@@ -13,20 +12,15 @@ use Modules\Seven\Entities\Sms;
 use Session;
 
 class Messenger {
-    /** @var string $apiKey */
-    private $apiKey;
+    private ?string $apiKey;
 
-    /** @var Client $client */
-    private $client;
+    private ?Client $client;
 
     public function __construct(string $apiKey = '') {
         $this->apiKey = $apiKey ?: Config::getApiKey();
         $this->client = $this->buildClient();
     }
 
-    /**
-     * @return Client
-     */
     private function buildClient(): Client {
         return new Client([
             'base_uri' => 'https://gateway.seven.io/api/',
@@ -37,30 +31,22 @@ class Messenger {
         ]);
     }
 
-    /**
-     * @return float|null
-     */
     public function balance(): ?float {
         $res = $this->client->get('balance');
         $balance = null;
 
         try {
             $balance = (float)$res->getBody()->getContents();
-        } catch (Exception $e) {
+        } catch (Exception) {
         }
 
-        self::flashAdmin($balance ? __('Balance: :balance', compact('balance'))
-            : __('Failed to retrieve balance - did you enter the correct API key?'),
-            $balance ? 'success' : 'danger');
+        $text = $balance === null ? __('flashBalanceFail') : __('flashBalance', compact('balance'));
+        $type = $balance === null ? 'danger' : 'success';
+        self::flashAdmin($text, $type);
 
         return $balance;
     }
 
-    /**
-     * @param string $text
-     * @param string $type
-     * @return void
-     */
     private static function flashAdmin(string $text, string $type = 'info'): void {
         Session::flash('flashes_floating', [[
             'role' => User::ROLE_ADMIN,
@@ -71,7 +57,7 @@ class Messenger {
 
     public function sms(Request $request, ...$recipients): void {
         if (empty($recipients)) {
-            self::flashAdmin(__('No recipients found for given filters.'), 'danger');
+            self::flashAdmin(__('flashNoRecipients'), 'danger');
             return;
         }
 
@@ -134,8 +120,8 @@ class Messenger {
             }
         }
 
-        $flash = __('Sent :msgCount SMS to :receivers recipients for :cost €',
-            compact('cost', 'msgCount', 'receivers'));
+        $currency = '€';
+        $flash = __('flashSentSms', compact('cost', 'currency', 'msgCount', 'receivers'));
 
         self::flashAdmin($flash);
     }

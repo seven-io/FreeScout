@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title_full', __('Send SMS to :firstName :lastName', [
+@section('title_full', __('userSmsTitle', [
     'firstName' => $user->first_name,
     'lastName' => $user->last_name,
 ]))
@@ -11,9 +11,7 @@
 @endsection
 
 @section('content')
-    <div class='section-heading'>
-        @lang('Send SMS')
-    </div>
+    <div class='section-heading'>@lang('userSmsLabel')</div>
 
     @include('partials/flash_messages')
 

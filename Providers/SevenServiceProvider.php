@@ -59,12 +59,12 @@ class SevenServiceProvider extends ServiceProvider {
             if (empty($phone)) return;
 
             $class = Route::currentRouteName() === 'seven.sms_user' ? 'active' : '';
-            $heading = __('Send SMS');
+            $heading = __('userSmsLabel');
             $route = route('seven.sms_user', ['id' => $user->id]);
             $html = <<< HTM
                  <li class='$class'>
                      <a href='$route'>
-                         <i class='glyphicon glyphicon-user'></i>
+                         <i class='glyphicon glyphicon-envelope'></i>
                          $heading
                      </a>
                  </li>
@@ -82,8 +82,7 @@ HTM;
 
         Eventy::addFilter('settings.view', [$this, 'addFilterSettingsView'], 20, 2);
 
-        Eventy::addFilter('settings.before_save', [$this, 'addFilterSettingsBeforeSave'],
-            20, 3);
+        Eventy::addFilter('settings.before_save', [$this, 'addFilterSettingsBeforeSave'], 20, 3);
     }
 
     /**
