@@ -40,7 +40,7 @@ class Messenger {
     /**
      * @return float|null
      */
-    public function balance() {
+    public function balance(): ?float {
         $res = $this->client->get('balance');
         $balance = null;
 
@@ -61,7 +61,7 @@ class Messenger {
      * @param string $type
      * @return void
      */
-    private static function flashAdmin(string $text, string $type = 'info') {
+    private static function flashAdmin(string $text, string $type = 'info'): void {
         Session::flash('flashes_floating', [[
             'role' => User::ROLE_ADMIN,
             'text' => $text,
@@ -69,7 +69,7 @@ class Messenger {
         ]]);
     }
 
-    public function sms(Request $request, ...$recipients) {
+    public function sms(Request $request, ...$recipients): void {
         if (empty($recipients)) {
             self::flashAdmin(__('No recipients found for given filters.'), 'danger');
             return;

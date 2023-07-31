@@ -6,10 +6,11 @@ use App\Option;
 
 class Config {
     /**
-     * @return string
+     * @return string|null
      */
-    public static function getApiKey(): string {
-        return decrypt(Option::get('seven_apiKey'));
+    public static function getApiKey(): ?string {
+        $apiKey = Option::get('seven_apiKey');
+        return $apiKey ? decrypt($apiKey) : $apiKey;
     }
 
     /**
@@ -24,9 +25,9 @@ class Config {
 
     /**
      * Returns the SMS sender identifier.
-     * @return string
+     * @return string|null
      */
-    public static function getSmsFrom(): string {
+    public static function getSmsFrom(): ?string {
         return Option::get('seven_sms_from');
     }
 

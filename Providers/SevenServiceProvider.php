@@ -11,7 +11,6 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 use Modules\Seven\Misc\Config;
 use Modules\Seven\Misc\Messenger;
-use Session;
 
 define('SEVEN_MODULE', 'seven');
 
@@ -135,7 +134,7 @@ HTM;
             ],
             'validator_rules' => [
                 'settings.seven_apiKey' => 'required|max:90',
-                'settings.seven_sms_from' => 'required|max:16',
+                'settings.seven_sms_from' => 'max:16',
             ],
         ];
     }
@@ -145,16 +144,22 @@ HTM;
     }
 
     public function addFilterSettingsBeforeSave(
-        Request $request, string $section, array $settings): Request {
+        Request $request, string $section, array $_settings): Request {
         if ($section !== 'seven') return $request;
 
-        $settings = $request->settings;
-        $settings['seven_sms_from'] = trim($settings['seven_sms_from']);
+        $settings = $request->get('settings');
+        $settings['seven_sms_from'] = $settings['seven_sms_from']
+            ? trim($settings['seven_sms_from'])
+            : $settings['seven_sms_from'];
         $apiKey = trim($settings['seven_apiKey']);
+
         $oldApiKey = Config::getApiKey();
 
-        if ($oldApiKey !== $apiKey) $settings['seven_apiKey'] = encrypt(
-            (new Messenger($apiKey))->balance() ? $apiKey : $oldApiKey);
+        if ($oldApiKey !== $apiKey) {
+            $balance = (new Messenger($apiKey))->balance();
+            $value = is_float($balance) ? $apiKey : $oldApiKey;
+            $settings['seven_apiKey'] = encrypt($value);
+        }
 
         return $request->replace(compact('settings'));
     }
