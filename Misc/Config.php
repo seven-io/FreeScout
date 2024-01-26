@@ -5,17 +5,20 @@ namespace Modules\Seven\Misc;
 use App\Option;
 
 class Config {
-    /**
-     * @return string|null
-     */
     public static function getApiKey(): ?string {
         $apiKey = Option::get('seven_apiKey');
-        return $apiKey ? decrypt($apiKey) : $apiKey;
+
+        try {
+            $apiKey = decrypt($apiKey);
+        }
+        catch (\Exception) {
+        }
+
+        return $apiKey;
     }
 
     /**
      * Returns SMS related configuration.
-     * @return array
      */
     public static function getSms(): array {
         return [
@@ -24,8 +27,27 @@ class Config {
     }
 
     /**
+     * Returns SMS related configuration.
+     */
+    public static function getEvents(): array {
+        return [
+            'conversation.status_changed' => [
+                'active' => self::getEventConversationStatusChanged(),
+                'text' => self::getEventConversationStatusChangedText()
+            ],
+        ];
+    }
+
+    public static function getEventConversationStatusChanged(): bool {
+        return Option::get('seven_event_conversation_status_changed');
+    }
+
+    public static function getEventConversationStatusChangedText(): ?string {
+        return Option::get('seven_event_conversation_status_changed_text');
+    }
+
+    /**
      * Returns the SMS sender identifier.
-     * @return string|null
      */
     public static function getSmsFrom(): ?string {
         return Option::get('seven_sms_from');
@@ -33,11 +55,11 @@ class Config {
 
     /**
      * Returns the whole configuration.
-     * @return array
      */
     public static function get(): array {
         return [
             'apiKey' => self::getApiKey(),
+            'events' => self::getEvents(),
             'sms' => self::getSms(),
         ];
     }

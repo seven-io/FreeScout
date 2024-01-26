@@ -7,7 +7,7 @@
     "description": "Send SMS via seven",
     "detailsUrl": "",
     "files": ["start.php"],
-    "keywords": ["sms"],
+    "keywords": ["seven", "sms"],
     "img": "https://www.seven.io/wp-content/uploads/Logo.svg",
     "license": "MIT",
     "name": "seven",
@@ -17,5 +17,5 @@
     ],
     "requiredAppVersion": "1.0.2",
     "requires": [],
-    "version": "2.0.0"
+    "version": "2.1.0"
 }

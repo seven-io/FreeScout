@@ -15,9 +15,6 @@ class SevenController extends Controller {
         $this->middleware('auth');
     }
 
-    /**
-     * @return View
-     */
     public function index(): View {
         $msg = (object)[
             'flash' => 0,
@@ -31,10 +28,6 @@ class SevenController extends Controller {
         ]));
     }
 
-    /**
-     * @param int $id
-     * @return View
-     */
     public function user(int $id): View {
         return view('seven::user', [
             'msg' => (object)[
@@ -46,9 +39,6 @@ class SevenController extends Controller {
     }
 
     /**
-     * @param int $id
-     * @param Request $request
-     * @return View
      * @throws GuzzleException
      */
     public function userSubmit(int $id, Request $request): View {
@@ -62,9 +52,6 @@ class SevenController extends Controller {
 
     /**
      * Show the form for creating a new resource.
-     * @param Request $request
-     * @return View
-     * @throws GuzzleException
      */
     public function submit(Request $request): View {
         $builder = User::query()->where('phone', '<>', '');

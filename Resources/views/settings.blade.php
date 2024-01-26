@@ -37,9 +37,13 @@
 
                         <div class='col-sm-6{{ $errors->has('settings.seven_apiKey') ? ' has-error' : '' }}'>
                             <input
-                                autocomplete='off' autofocus class='form-control'
+                                autocomplete='off'
+                                autofocus
+                                class='form-control'
                                 id='apiKey'
-                                maxlength='90' name='settings[seven_apiKey]' required
+                                maxlength='90'
+                                name='settings[seven_apiKey]'
+                                required
                                 type='password'
                                 value='{{ $settings['seven_apiKey'] }}'
                             />
@@ -70,13 +74,62 @@
                                 @lang('settingSmsFromHelpIntro')
                                 @lang('settingSmsFromHelpLimits', [
                                     'maxAlphanumeric' => 11,
-                                    'maxNumeric' => 16
+                                    'maxNumeric' => 16,
                                 ])
                                 @lang('settingSmsFromHelpCountryRestrictions')
-                                @lang('settingSmsFromHelpMoreInfo', [
-                                    'url' => 'https://help.seven.io/en/set-sender-id'
-                                ])
+                                @lang('settingSmsFromHelpMoreInfo')
                             </p>
+                        </div>
+                    </div>
+                </fieldset>
+
+                <fieldset>
+                    <legend>@lang('settingSectionEvents')</legend>
+
+                    <h3>@lang('settingEventConversationStatusUpdated')</h3>
+
+                    <div class='form-group'>
+                        <label
+                            for="seven_event_conversation_status_changed"
+                            class="col-sm-2 control-label"
+                        >
+                            @lang('settingEventConversationActive')
+                        </label>
+
+                        <div class="controls">
+                            <div class="col-sm-6">
+                                <div class="onoffswitch-wrap">
+                                    <div class="onoffswitch">
+                                        <input
+                                            class="onoffswitch-checkbox"
+                                            id="seven_event_conversation_status_changed"
+                                            name="settings[seven_event_conversation_status_changed]"
+                                            type="checkbox"
+                                            value="1"
+                                            @if (old('settings[seven_event_conversation_status_changed]', $settings['seven_event_conversation_status_changed']))checked="checked"@endif
+                                        >
+                                        <label class="onoffswitch-label" for="seven_event_conversation_status_changed"></label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class='form-group'>
+                        <label for='seven_event_conversation_status_changed_text' class='col-sm-2 control-label'>
+                            @lang('settingEventConversationText')
+                        </label>
+
+                        <div class='col-sm-6{{ $errors->has('settings.seven_event_conversation_status_changed_text') ? ' has-error' : '' }}'>
+                            <textarea
+                                autofocus
+                                class='form-control'
+                                id='seven_event_conversation_status_changed_text'
+                                maxlength='90'
+                                name='settings[seven_event_conversation_status_changed_text]'
+                                required
+                            >{{ $settings['seven_event_conversation_status_changed_text'] }}</textarea>
+
+                            <p class='form-help'>@lang('smsFormTextRequiredMessage')</p>
                         </div>
                     </div>
                 </fieldset>
