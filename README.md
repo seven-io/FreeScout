@@ -8,7 +8,7 @@ Adds the functionality of sending SMS to your users.
 
 - An [API key](https://help.seven.io/en/api-key-access) from [seven](https://www.seven.io)
 - [FreeScout](https://freescout.net/) installation (tested with 1.7.x)
-- PHP 7.0+
+- PHP 7.1+
 
 ## Installation
 
@@ -38,8 +38,6 @@ and extract the archive to `/path/to/freescout/Modules/`.
    may apply
 6. Click **Save** for submitting
 
-See the example [screenshot](_screenshots/settings.png).
-
 ## Usage
 
 You can use placeholders which resolve to the user property as long as it exists.
@@ -65,8 +63,6 @@ Narrow down users by the following properties:
 4. Enter a text and submit by clicking **Send**
 
 *Note:* If the user has no phone associated, the **Send SMS** menu entry won't get shown.
-
-See the example [screenshot](_screenshots/sms_bulk.png).
 
 ## Support
 
