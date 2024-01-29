@@ -11,7 +11,7 @@ class Config {
         try {
             $apiKey = decrypt($apiKey);
         }
-        catch (\Exception) {
+        catch (\Exception $_) {
         }
 
         return $apiKey;

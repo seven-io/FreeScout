@@ -37,7 +37,7 @@ class Messenger {
 
         try {
             $balance = (float)$res->getBody()->getContents();
-        } catch (Exception) {
+        } catch (Exception $_) {
         }
 
         $text = $balance === null ? __('flashBalanceFail') : __('flashBalance', compact('balance'));
