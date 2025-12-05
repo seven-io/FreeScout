@@ -2,7 +2,7 @@
 
 # seven module for FreeScout
 
-Adds the functionality of sending SMS to your users.
+Adds the functionality of sending SMS to your users and automated event-driven SMS notifications.
 
 ## Prerequisites
 
@@ -31,7 +31,7 @@ and extract the archive to `/path/to/freescout/Modules/`.
 
 1. Open up your FreeScout administration
 2. Go to **Manage -> Modules -> seven** and click **Activate**
-3. Go to **Manage -> Settings ->seven**
+3. Go to **Manage -> Settings -> seven**
 4. **API Key:** Enter your seven API Key
 5. **Sender Identifier:** Optionally enter a sender identifier being displayed as the SMS
    sender - max. 11 alphanumeric or 16 numeric characters, country specific restrictions
@@ -63,6 +63,51 @@ Narrow down users by the following properties:
 4. Enter a text and submit by clicking **Send**
 
 *Note:* If the user has no phone associated, the **Send SMS** menu entry won't get shown.
+
+## Event Notifications
+
+Automatically send SMS notifications when specific events occur in FreeScout. Configure under **Manage -> Settings -> seven** in the "Events" section.
+
+### Supported Events
+
+- **New Ticket Created** - Triggered when a new conversation is created
+- **Ticket Assigned** - Triggered when a conversation is assigned to a user
+- **Customer Reply** - Triggered when a customer replies to a conversation
+- **Agent Reply** - Triggered when an agent replies to a conversation
+
+### Configuration Options
+
+1. **Enable/Disable** - Toggle event notifications on or off
+2. **Event Selection** - Choose which events should trigger SMS notifications
+3. **Message Template** - Customize the SMS text with placeholders
+4. **Recipient Mode** - Choose who receives the notifications:
+   - *Assigned User* - SMS is sent to the user assigned to the conversation
+   - *Fixed Numbers* - SMS is sent to a predefined list of phone numbers
+5. **Mailbox Filter** - Optionally limit notifications to specific mailboxes
+
+### Available Placeholders
+
+Use these placeholders in your message template:
+
+| Placeholder | Description |
+|-------------|-------------|
+| `{{event.type}}` | Event name (e.g., "New Ticket", "Customer Reply") |
+| `{{conversation.id}}` | Conversation ID |
+| `{{conversation.subject}}` | Conversation subject |
+| `{{conversation.status}}` | Current status |
+| `{{customer.name}}` | Customer's full name |
+| `{{customer.email}}` | Customer's email address |
+| `{{mailbox.name}}` | Mailbox name |
+| `{{mailbox.email}}` | Mailbox email address |
+| `{{user.name}}` | Assigned user's name |
+
+### Example Message Template
+
+```
+{{event.type}}: {{conversation.subject}}
+Customer: {{customer.name}}
+Mailbox: {{mailbox.name}}
+```
 
 ## Support
 
