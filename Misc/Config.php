@@ -62,6 +62,7 @@ class Config {
     // Event selection (which events are enabled)
     public static function getEventNotificationsEvents(): array {
         $events = Option::get('seven_event_notifications_events');
+        if (is_array($events)) return $events;
         return $events ? json_decode($events, true) : [];
     }
 
@@ -83,6 +84,7 @@ class Config {
     // Mailbox filter
     public static function getEventNotificationsMailboxes(): array {
         $mailboxes = Option::get('seven_event_notifications_mailboxes');
+        if (is_array($mailboxes)) return $mailboxes;
         return $mailboxes ? json_decode($mailboxes, true) : [];
     }
 
