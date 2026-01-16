@@ -35,6 +35,14 @@ class Config {
                 'active' => self::getEventConversationStatusChanged(),
                 'text' => self::getEventConversationStatusChangedText()
             ],
+            'event_notifications' => [
+                'enabled' => self::getEventNotificationsEnabled(),
+                'events' => self::getEventNotificationsEvents(),
+                'text' => self::getEventNotificationsText(),
+                'recipient_mode' => self::getEventNotificationsRecipientMode(),
+                'fixed_numbers' => self::getEventNotificationsFixedNumbers(),
+                'mailboxes' => self::getEventNotificationsMailboxes()
+            ],
         ];
     }
 
@@ -44,6 +52,40 @@ class Config {
 
     public static function getEventConversationStatusChangedText(): ?string {
         return Option::get('seven_event_conversation_status_changed_text');
+    }
+
+    // Main toggle for event notifications
+    public static function getEventNotificationsEnabled(): bool {
+        return Option::get('seven_event_notifications_enabled');
+    }
+
+    // Event selection (which events are enabled)
+    public static function getEventNotificationsEvents(): array {
+        $events = Option::get('seven_event_notifications_events');
+        if (is_array($events)) return $events;
+        return $events ? json_decode($events, true) : [];
+    }
+
+    // Message text
+    public static function getEventNotificationsText(): ?string {
+        return Option::get('seven_event_notifications_text');
+    }
+
+    // Recipient mode
+    public static function getEventNotificationsRecipientMode(): string {
+        return Option::get('seven_event_notifications_recipient_mode', 'assigned_user');
+    }
+
+    // Fixed phone numbers
+    public static function getEventNotificationsFixedNumbers(): ?string {
+        return Option::get('seven_event_notifications_fixed_numbers');
+    }
+
+    // Mailbox filter
+    public static function getEventNotificationsMailboxes(): array {
+        $mailboxes = Option::get('seven_event_notifications_mailboxes');
+        if (is_array($mailboxes)) return $mailboxes;
+        return $mailboxes ? json_decode($mailboxes, true) : [];
     }
 
     /**

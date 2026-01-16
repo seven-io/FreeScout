@@ -46,6 +46,97 @@ class SevenServiceProvider extends ServiceProvider {
     }
 
     /**
+     * Checks and sends event notifications
+     */
+    private function handleEventNotification(string $eventType, $conversation) {
+        // Is feature enabled?
+        if (!Config::getEventNotificationsEnabled()) {
+            return;
+        }
+
+        // Is this specific event enabled?
+        $enabledEvents = Config::getEventNotificationsEvents();
+        if (empty($enabledEvents) || !in_array($eventType, $enabledEvents)) {
+            return;
+        }
+
+        // Check mailbox filter
+        $allowedMailboxes = Config::getEventNotificationsMailboxes();
+        if (!empty($allowedMailboxes) && !in_array($conversation->mailbox_id, $allowedMailboxes)) {
+            return;
+        }
+
+        // Determine recipients
+        $recipientMode = Config::getEventNotificationsRecipientMode();
+        $recipients = [];
+
+        if ($recipientMode === 'assigned_user') {
+            if ($conversation->user_id) {
+                $user = User::find($conversation->user_id);
+                if ($user && $user->phone) {
+                    $recipients[] = $user->phone;
+                }
+            }
+        } elseif ($recipientMode === 'fixed_numbers') {
+            $fixedNumbers = Config::getEventNotificationsFixedNumbers();
+            if ($fixedNumbers) {
+                $numbers = array_map('trim', explode(',', $fixedNumbers));
+                $recipients = array_filter($numbers);
+            }
+        }
+
+        if (empty($recipients)) {
+            return;
+        }
+
+        // Build message with placeholders
+        $text = Config::getEventNotificationsText();
+
+        // Event type placeholder
+        $eventNames = [
+            'conversation.created' => 'New Ticket',
+            'conversation.assigned' => 'Ticket Assigned',
+            'customer.reply.created' => 'Customer Reply',
+            'user.reply.created' => 'Agent Reply'
+        ];
+        $text = str_replace('{{event.type}}', $eventNames[$eventType] ?? $eventType, $text);
+
+        // Conversation placeholders
+        $text = str_replace('{{conversation.id}}', $conversation->id, $text);
+        $text = str_replace('{{conversation.subject}}', $conversation->subject, $text);
+        $statusLabel = Conversation::$statuses[$conversation->status] ?? $conversation->status;
+        $text = str_replace('{{conversation.status}}', $statusLabel, $text);
+
+        // Customer placeholders
+        $customer = $conversation->customer;
+        if ($customer) {
+            $customerName = $customer->getFullName();
+            $text = str_replace('{{customer.name}}', $customerName, $text);
+            $text = str_replace('{{customer.email}}', $customer->email, $text);
+        }
+
+        // Mailbox placeholders
+        $mailbox = $conversation->mailbox;
+        if ($mailbox) {
+            $text = str_replace('{{mailbox.name}}', $mailbox->name, $text);
+            $text = str_replace('{{mailbox.email}}', $mailbox->email, $text);
+        }
+
+        // User placeholders
+        if ($conversation->user_id) {
+            $user = User::find($conversation->user_id);
+            if ($user) {
+                $text = str_replace('{{user.name}}', $user->getFullName(), $text);
+            }
+        }
+
+        // Send SMS to all recipients
+        foreach ($recipients as $recipient) {
+            $this->sms($text, $recipient);
+        }
+    }
+
+    /**
      * Boot the application events.
      * @return void
      */
@@ -92,6 +183,26 @@ class SevenServiceProvider extends ServiceProvider {
 
             $this->sms($text, $to);
         }, 20, 1);
+
+        // Event: New ticket created
+        \Eventy::addAction('conversation.created', function ($conversation) {
+            $this->handleEventNotification('conversation.created', $conversation);
+        }, 20, 1);
+
+        // Event: Ticket assigned
+        \Eventy::addAction('conversation.assigned', function ($conversation, $user) {
+            $this->handleEventNotification('conversation.assigned', $conversation);
+        }, 20, 2);
+
+        // Event: Customer replied
+        \Eventy::addAction('customer.reply.created', function ($conversation, $thread) {
+            $this->handleEventNotification('customer.reply.created', $conversation);
+        }, 20, 2);
+
+        // Event: Agent replied
+        \Eventy::addAction('user.reply.created', function ($conversation, $thread) {
+            $this->handleEventNotification('user.reply.created', $conversation);
+        }, 20, 2);
 
         \Eventy::addAction('menu.manage.append', function () {
             echo '<li class=\'' . Helper::menuSelectedHtml('seven') . '\'>
@@ -163,7 +274,13 @@ HTM;
                 'seven_apiKey' => Config::getApiKey(),
                 'seven_sms_from' => Config::getSmsFrom(),
                 'seven_event_conversation_status_changed' => Config::getEventConversationStatusChanged(),
-                'seven_event_conversation_status_changed_text' => Config::getEventConversationStatusChangedText()
+                'seven_event_conversation_status_changed_text' => Config::getEventConversationStatusChangedText(),
+                'seven_event_notifications_enabled' => Config::getEventNotificationsEnabled(),
+                'seven_event_notifications_events' => Config::getEventNotificationsEvents(),
+                'seven_event_notifications_text' => Config::getEventNotificationsText(),
+                'seven_event_notifications_recipient_mode' => Config::getEventNotificationsRecipientMode(),
+                'seven_event_notifications_fixed_numbers' => Config::getEventNotificationsFixedNumbers(),
+                'seven_event_notifications_mailboxes' => Config::getEventNotificationsMailboxes(),
             ] : $settings;
     }
 
@@ -177,12 +294,23 @@ HTM;
                 ],
                 'sms_from',
                 'seven_event_conversation_status_changed',
-                'seven_event_conversation_status_changed_text'
+                'seven_event_conversation_status_changed_text',
+                'seven_event_notifications_enabled',
+                'seven_event_notifications_events',
+                'seven_event_notifications_text',
+                'seven_event_notifications_recipient_mode',
+                'seven_event_notifications_fixed_numbers',
+                'seven_event_notifications_mailboxes',
             ],
             'validator_rules' => [
                 'settings.seven_apiKey' => 'required|max:90',
                 'settings.seven_sms_from' => 'max:16',
-                'settings.seven_event_conversation_status_changed_text' => 'max:1520'
+                'settings.seven_event_conversation_status_changed_text' => 'max:1520',
+                'settings.seven_event_notifications_text' => 'max:1520',
+                'settings.seven_event_notifications_recipient_mode' => 'in:assigned_user,fixed_numbers',
+                'settings.seven_event_notifications_fixed_numbers' => 'required_if:settings.seven_event_notifications_recipient_mode,fixed_numbers|max:500',
+                'settings.seven_event_notifications_events' => 'array|nullable',
+                'settings.seven_event_notifications_mailboxes' => 'array|nullable',
             ],
         ];
     }
@@ -207,6 +335,38 @@ HTM;
             $balance = (new Messenger($apiKey))->balance();
             $value = is_float($balance) ? $apiKey : $oldApiKey;
             $settings['seven_apiKey'] = encrypt($value);
+        }
+
+        // Validate and sanitize fixed phone numbers
+        if (!empty($settings['seven_event_notifications_fixed_numbers'])) {
+            $numbers = array_map('trim', explode(',', $settings['seven_event_notifications_fixed_numbers']));
+            $validNumbers = [];
+
+            foreach ($numbers as $number) {
+                if (preg_match('/^\+[0-9]{10,15}$/', $number)) {
+                    $validNumbers[] = $number;
+                }
+            }
+
+            $settings['seven_event_notifications_fixed_numbers'] = implode(',', $validNumbers);
+        }
+
+        // Encode events as JSON
+        if (isset($settings['seven_event_notifications_events'])) {
+            if (is_array($settings['seven_event_notifications_events'])) {
+                $settings['seven_event_notifications_events'] = json_encode($settings['seven_event_notifications_events']);
+            }
+        } else {
+            $settings['seven_event_notifications_events'] = json_encode([]);
+        }
+
+        // Encode mailboxes as JSON
+        if (isset($settings['seven_event_notifications_mailboxes'])) {
+            if (is_array($settings['seven_event_notifications_mailboxes'])) {
+                $settings['seven_event_notifications_mailboxes'] = json_encode($settings['seven_event_notifications_mailboxes']);
+            }
+        } else {
+            $settings['seven_event_notifications_mailboxes'] = json_encode([]);
         }
 
         return $request->replace(compact('settings'));
