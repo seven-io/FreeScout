@@ -104,7 +104,8 @@ class SevenServiceProvider extends ServiceProvider {
         // Conversation placeholders
         $text = str_replace('{{conversation.id}}', $conversation->id, $text);
         $text = str_replace('{{conversation.subject}}', $conversation->subject, $text);
-        $text = str_replace('{{conversation.status}}', Conversation::$statuses[$conversation->status], $text);
+        $statusLabel = Conversation::$statuses[$conversation->status] ?? $conversation->status;
+        $text = str_replace('{{conversation.status}}', $statusLabel, $text);
 
         // Customer placeholders
         $customer = $conversation->customer;
