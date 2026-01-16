@@ -77,7 +77,7 @@ class SevenServiceProvider extends ServiceProvider {
                     $recipients[] = $user->phone;
                 }
             }
-        } else if ($recipientMode === 'fixed_numbers') {
+        } elseif ($recipientMode === 'fixed_numbers') {
             $fixedNumbers = Config::getEventNotificationsFixedNumbers();
             if ($fixedNumbers) {
                 $numbers = array_map('trim', explode(',', $fixedNumbers));
